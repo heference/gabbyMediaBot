@@ -8,18 +8,10 @@ var cheerio = require("cheerio");
 const TelegramBot = require('node-telegram-bot-api');
 
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '#########################################';
+const token = 'TELEGRAM BOT TOKEN';
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
-
-//https://api.telegram.org/bot<token>/METHOD_NAME
-// bot.setWebHook('https://api.telegram.org/bot79712249:AAGz1IiLF8FT_ROqE0VG0yq0UOp7wnx-a-g', {
-//   certificate: '/home/node/gabrielMediaBot/cert/crt.pem'
-// });
-
-//bot.setWebHook('https://api.telegram.org/bot79712249:AAGz1IiLF8FT_ROqE0VG0yq0UOp7wnx-a-g')
-
 
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
@@ -34,6 +26,14 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
+bot.onText(/\/disk/, function(msg) {
+  const chatId = msg.chat.id;
+  //NOT WORKING
+  var storageAmount = getStorageAmount();
+  console.log("DISK COMMAND : " + storageAmount);
+  bot.sendMessage(chatId, storageAmount);
+});
+
 // Listen for any kind of message. There are different kinds of
 // messages.
 bot.on('message', (msg) => {
@@ -42,7 +42,9 @@ bot.on('message', (msg) => {
   //scraping JS start -> to be moduled
   var searchKeyword = msg.text;
   console.log(searchKeyword);
-  var searchUrl = "https://";
+  var searchUrl = "WEB URL";
+
+  bot.sendMessage(chatId, 'GabbyBot Searching.....');
   request(searchUrl, function(error, response, body) {
     if (error) throw error;
       //console.log(body);
@@ -50,19 +52,12 @@ bot.on('message', (msg) => {
       var $ = cheerio.load(body);
       var listElements = $('tr.bg1');
       var resultArray = [];
+
       listElements.each(function(i) {
           var title = $(this).find('a').text();
           var magnet = $(this).find('a').attr('href');
 
           // title = title.replace('TV', i+'. ');
-          // title = title.replace('영화', i+'. ');
-          // title = title.replace('예능', i+'. ');
-          // title = title.replace('해티', i+'. ');
-          // title = title.replace('게임', i+'. ');
-          // title = title.replace('다큐', i+'. ');
-          // title = title.replace('도서', i+'. ');
-          // title = title.replace('모발', i+'. ');
-          // title = title.replace('애니', i+'. ');
           title = title.replace(/\n/gi,'');
           title = title.replace(/\t/gi,'');
 
@@ -96,17 +91,8 @@ bot.on('message', (msg) => {
       bot.sendMessage(chatId, "다운로드 할 항목을 선택해 주세요", opts);
   });
 
-
-
-
-
-
-
   //scraping JS end -> to be moduled
 
-
-  // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, 'Gabriel Searching.....');
 });
 
 bot.on('callback_query', function(msg) {
@@ -120,13 +106,25 @@ bot.on('callback_query', function(msg) {
 var exec = require('child_process').exec, child;
 
 function executeTransmission(magnet) {
-    var magnetAddress = "magnet:?xt=urn:btih:" + magnet
-    child = exec("sh ./transmission.sh "+magnetAddress, function (error, stdout, stderr) {
-      console.log('start transmission ' + magnetAddress);
-      if (error !== null) {
-          console.log('exec error: ' + error);
-      }
-    });
+  var magnetAddress = "magnet:?xt=urn:btih:" + magnet
+  child = exec("sh ./transmission.sh "+magnetAddress, function (error, stdout, stderr) {
+    console.log('start transmission ' + magnetAddress);
+    if (error !== null) {
+      console.log('exec error: ' + error);
+    }
+  });
+}
+
+function getStorageAmount() {
+  var storageAmount = "";
+  child = exec("sh ./storageCheck.sh", function (error, stdout, stderr) {
+    if (error !== null) {
+        console.log('exec error: ' + error);
+    }
+    console.log("Shell Script result : " + stdout);
+    storageAmount = stdout;
+  });
+  return storageAmount;
 }
 
 function torrentCrawler(genre, keyword) {
