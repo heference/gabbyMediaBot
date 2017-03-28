@@ -8,19 +8,10 @@ var cheerio = require("cheerio");
 const TelegramBot = require('node-telegram-bot-api');
 
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '379712249:AAGz1IiLF8FT_ROqE0VG0yq0UOp7wnx-a-g';
+const token = 'TELEGRAM BOT TOKEN';
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
-
-//https://api.telegram.org/bot<token>/METHOD_NAME
-//http://115.22.213.62:3000/bot79712249:AAGz1IiLF8FT_ROqE0VG0yq0UOp7wnx-a-g
-// bot.setWebHook('https://api.telegram.org/bot79712249:AAGz1IiLF8FT_ROqE0VG0yq0UOp7wnx-a-g', {
-//   certificate: '/home/node/gabrielMediaBot/cert/crt.pem'
-// });
-
-//bot.setWebHook('https://api.telegram.org/bot79712249:AAGz1IiLF8FT_ROqE0VG0yq0UOp7wnx-a-g')
-
 
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
@@ -51,7 +42,7 @@ bot.on('message', (msg) => {
   //scraping JS start -> to be moduled
   var searchKeyword = msg.text;
   console.log(searchKeyword);
-  var searchUrl = "https://torrentkim5.net/bbs/s.php?k="+encodeURI(encodeURIComponent(searchKeyword))+"&b=";
+  var searchUrl = "WEB URL";
 
   bot.sendMessage(chatId, 'GabbyBot Searching.....');
   request(searchUrl, function(error, response, body) {
