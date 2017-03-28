@@ -56,9 +56,8 @@
       * Node Server -> Telegram Bot 으로 응답
 * 토렌트 크롤러 제작
   * Scraping.js
-    * 티프리카 크롤링 -> 토렌트 킴 크롤링으로 변경
-      * URL 형식: http://www.tfreeca22.com/torrent_info.php?bo_table=tdrama&wr_id=690279
-        * ID 가 반드시 필요함
+    * URL
+      * ID 가 반드시 필요함
       * input : 검색어 메세지
       * output : 게시물 ID
   * Magnet parser
